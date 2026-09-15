@@ -1,0 +1,45 @@
+name: 🐛 Bug report
+description: Something in @whereq/react isn't working as expected.
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report! Please search existing issues first.
+  - type: input
+    id: version
+    attributes:
+      label: '@whereq/react version'
+      placeholder: e.g. 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [Scrollbar, GlobalScrollbar, Other / not sure]
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, and what you expected instead.
+    validations:
+      required: true
+  - type: input
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A link to a StackBlitz / CodeSandbox / repo. This gets bugs fixed fastest.
+      placeholder: https://stackblitz.com/edit/...
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Browser(s), React version, framework (Next.js/Vite/…), OS.
+      placeholder: |
+        - Browser: Firefox 130
+        - React: 19.0.0
+        - Framework: Next.js 15 (App Router)
+    validations:
+      required: true
