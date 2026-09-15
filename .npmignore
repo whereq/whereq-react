@@ -1,0 +1,19 @@
+# Publish only the built library + docs (see package.json "files" allowlist too).
+src
+examples
+docs
+.storybook
+storybook-static
+bin
+scripts
+.github
+.changeset
+*.config.ts
+*.config.js
+vitest.setup.ts
+tsconfig.json
+.prettierrc.json
+eslint.config.js
+coverage
+CONTRIBUTING.md
+RELEASING.md

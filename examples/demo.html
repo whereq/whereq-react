@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@whereq/react — Scrollbar demo</title>
+    <!--
+      Zero-build demo: run `pnpm build` first, then serve this folder's parent
+      (e.g. `npx serve .` from the repo root) and open /examples/demo.html.
+      React is loaded from esm.sh; the library is loaded from the local ../dist.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19",
+          "react/jsx-runtime": "https://esm.sh/react@19/jsx-runtime",
+          "react-dom/client": "https://esm.sh/react-dom@19/client",
+          "@whereq/react": "../dist/index.js"
+        }
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: light-dark(#f5f3ef, #0d1117);
+        color: light-dark(#101e20, #e8eef2);
+        display: grid;
+        place-items: center;
+        padding: 32px;
+      }
+      .card {
+        width: min(420px, 100%);
+        border: 1px solid light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12));
+        border-radius: 12px;
+        background: light-dark(#fff, #161b22);
+        padding: 20px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 4px;
+      }
+      p.sub {
+        margin: 0 0 16px;
+        opacity: 0.7;
+        font-size: 13px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
+      .item {
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.05));
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { createElement as h, useState } from 'react'
+      import { createRoot } from 'react-dom/client'
+      import { Scrollbar, GlobalScrollbar } from '@whereq/react'
+
+      function Demo() {
+        const [autoHide, setAutoHide] = useState(false)
+        const [size, setSize] = useState(6)
+        const items = Array.from({ length: 40 }, (_, i) => h('div', { className: 'item', key: i }, `Row ${i + 1}`))
+        return h('div', { className: 'card' }, [
+          h(GlobalScrollbar, { key: 'g', theme: 'auto', size }),
+          h('h1', { key: 'h' }, '@whereq/react — <Scrollbar>'),
+          h('p', { className: 'sub', key: 's' }, "whereq.cc's thin scrollbar, as a component."),
+          h('label', { className: 'row', key: 'a' }, [
+            h('input', { type: 'checkbox', checked: autoHide, onChange: (e) => setAutoHide(e.target.checked), key: 'i' }),
+            'auto-hide',
+          ]),
+          h('label', { className: 'row', key: 'z' }, [
+            'size ',
+            h('input', { type: 'range', min: 4, max: 16, value: size, onChange: (e) => setSize(+e.target.value), key: 'r' }),
+            `${size}px`,
+          ]),
+          h(Scrollbar, { key: 'sb', autoHide, size, theme: 'auto', style: { maxHeight: 260, paddingRight: 8 } }, items),
+        ])
+      }
+
+      createRoot(document.getElementById('root')).render(h(Demo))
+    </script>
+  </body>
+</html>
