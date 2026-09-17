@@ -32,20 +32,37 @@ CI does the publishing. npm credentials (`NPM_TOKEN`) live only in CI.
 
 ## Cutting a release (maintainers)
 
-You don't run a script. When changesets land on `main`, the
-[`release.yml`](.github/workflows/release.yml) workflow opens (and keeps
-updating) a **"release: version packages"** PR that applies the pending
-changesets — bumping `package.json` and rewriting `CHANGELOG.md`.
+Publishing always happens in CI ([`release.yml`](.github/workflows/release.yml)):
+on any push to `main`, if there are **no** pending changesets it runs
+`pnpm run release` (build + `changeset publish`) — publishing to npm with
+`--access public` + provenance, pushing the `vX.Y.Z` tag, and creating the
+GitHub Release. Credentials never leave CI.
 
-**To release, merge that PR.** On the resulting push to `main`, the same workflow
-sees no pending changesets and instead runs `pnpm run release` (build +
-`changeset publish`), which:
+The only choice is **how the version bump gets onto `main`**. Two equivalent
+paths — pick whichever you like:
 
-- publishes to npm with `--access public` and provenance,
-- pushes the `vX.Y.Z` git tag,
-- creates the matching GitHub Release.
+### Option A — from the CLI (one command)
 
-Watch it at <https://github.com/whereq/whereq-react/actions>.
+Best for a solo maintainer. From a clean, up-to-date `main`:
+
+```bash
+bin/release.sh                      # consume pending changesets → bump → push
+bin/release.sh --minor -m "Add Modal"   # no changeset yet? create one, then release
+bin/release.sh --dry-run            # preview; change nothing
+```
+
+It green-bars, runs `changeset version` (bump + CHANGELOG), commits `release:
+vX.Y.Z`, and pushes `main`. The push has no changesets left, so CI publishes.
+The script never tags or publishes — CI does. Requires push access to `main`.
+
+### Option B — merge the bot's PR (no CLI, works with protected `main`)
+
+When changesets land on `main`, `release.yml` opens (and keeps updating) a
+**"release: version packages"** PR that applies them. **Merge that PR** and the
+next run of the workflow publishes. Best when `main` is protected or you have
+multiple maintainers who want to review the version bump + CHANGELOG first.
+
+Watch either at <https://github.com/whereq/whereq-react/actions>.
 
 ## One-time setup
 
