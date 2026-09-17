@@ -90,12 +90,15 @@ fi
 
 info "Fetching origin…"
 run git fetch --quiet --tags origin
+# Being *ahead* of origin is fine (e.g. you just merged a feature locally — the
+# final push will sync it). Only block if origin has commits you don't, since
+# releasing on a stale/diverged main would be wrong.
 if git rev-parse --verify --quiet "origin/${MAIN_BRANCH}" >/dev/null; then
-  LOCAL="$(git rev-parse "$MAIN_BRANCH")"
-  REMOTE="$(git rev-parse "origin/${MAIN_BRANCH}")"
-  [[ "$LOCAL" == "$REMOTE" ]] || die "Local '${MAIN_BRANCH}' differs from origin. Pull/push first." 2
+  if ! git merge-base --is-ancestor "origin/${MAIN_BRANCH}" "$MAIN_BRANCH"; then
+    die "origin/${MAIN_BRANCH} has commits your local ${MAIN_BRANCH} doesn't — pull/rebase first." 2
+  fi
 fi
-ok "On ${MAIN_BRANCH}, clean, in sync with origin"
+ok "On ${MAIN_BRANCH}, clean, at or ahead of origin"
 
 # ── Green bar ────────────────────────────────────────────────────────────────
 step "Green bar (typecheck · lint · test · build)"
