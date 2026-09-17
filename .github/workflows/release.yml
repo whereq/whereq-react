@@ -1,0 +1,60 @@
+name: Release
+
+# Single-branch release flow driven by Changesets.
+#
+# On every push to `main` this runs the green bar, then hands off to the
+# Changesets action:
+#   • If there are pending changesets, it opens/updates a "Version Packages" PR
+#     that bumps the version in package.json and writes CHANGELOG.md.
+#   • When that PR is merged (no changesets left), it runs `pnpm run release`
+#     (build + `changeset publish`) to publish to npm and pushes the git tags,
+#     then creates a GitHub Release for the published version.
+#
+# npm credentials (NPM_TOKEN) live only in CI. Provenance is enabled via OIDC.
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the version commit + tags, create the GitHub Release
+  pull-requests: write # open/update the "Version Packages" PR
+  id-token: write # npm provenance (OIDC)
+
+jobs:
+  release:
+    name: version PR · publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run lint
+      - run: pnpm run test
+
+      - name: Create Release PR or publish to npm
+        uses: changesets/action@v1
+        with:
+          version: pnpm exec changeset version
+          publish: pnpm run release
+          commit: 'release: version packages'
+          title: 'release: version packages'
+        env:
+          # Prefer a PAT (CHANGESETS_TOKEN) so the "Version Packages" PR triggers
+          # CI — PRs opened by the default GITHUB_TOKEN don't. Falls back to the
+          # default token if no PAT is configured (publish still works either way).
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN || secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'

@@ -3,7 +3,7 @@
 # @whereq/react
 
 **WhereQ's open-source React component library.**
-Lightweight, accessible, themeable UI primitives — starting with a beautiful thin **Scrollbar**.
+Lightweight, accessible, themeable UI primitives — a thin **Scrollbar** and a generic **Avatar**.
 
 [![npm version](https://img.shields.io/npm/v/@whereq/react.svg)](https://www.npmjs.com/package/@whereq/react)
 [![npm downloads](https://img.shields.io/npm/dm/@whereq/react.svg)](https://www.npmjs.com/package/@whereq/react)
@@ -101,6 +101,29 @@ const cleanup = injectGlobalScrollbarStyles({ theme: 'dark', size: 6 })
 // cleanup() removes the styles
 ```
 
+### `<Avatar>` — image, with a graceful initials fallback
+
+```tsx
+import { Avatar, AvatarGroup } from '@whereq/react'
+
+// Image; falls back to initials on a name-derived colour if it 404s.
+;<Avatar src="/users/ada.jpg" name="Ada Lovelace" status="online" />
+
+// No image → deterministic initials chip.
+;<Avatar name="Grace Hopper" />
+
+// Head-crop a portrait so the face fills the circle, with a ring.
+;<Avatar src="/mascot.png" name="Q" position="top" ring="#e4e8ee" ringWidth={2} />
+
+// Overlapping stack with a +N overflow chip.
+;<AvatarGroup size={32} max={3}>
+  <Avatar src="/a.jpg" name="Ada" />
+  <Avatar src="/b.jpg" name="Ben" />
+  <Avatar name="Cai" />
+  <Avatar name="Dee" />
+</AvatarGroup>
+```
+
 ## API
 
 ### `<Scrollbar>` props
@@ -120,13 +143,32 @@ Extends `React.HTMLAttributes<HTMLDivElement>` (so `className`, `style`, `onScro
 | `autoHideDelay`   | `number`                                      | `1000`       | ms the thumb stays after scrolling stops.                        |
 | `firefoxWidth`    | `'auto' \| 'thin' \| 'none'`                  | `'thin'`     | Firefox `scrollbar-width` keyword.                               |
 
+### `<Avatar>` props
+
+Extends `React.HTMLAttributes<HTMLSpanElement>` (minus `color`). Full table in the
+[Avatar docs](https://whereq.github.io/whereq-react/components/avatar).
+
+| Prop        | Type                                        | Default    | Description                                              |
+| ----------- | ------------------------------------------- | ---------- | ------------------------------------------------------- |
+| `src`       | `string`                                    | —          | Image URL; falls back to initials if missing / errors.  |
+| `name`      | `string`                                    | —          | Drives auto-initials, the colour and the a11y label.    |
+| `size`      | `number`                                    | `40`       | Diameter in px.                                         |
+| `shape`     | `'circle' \| 'rounded' \| 'square'`         | `'circle'` | Outline shape.                                          |
+| `position`  | `CSSProperties['objectPosition']`           | `'center'` | Image `object-position` — use `'top'` to head-crop.     |
+| `ring`      | `string`                                    | —          | Inset ring colour (`ringWidth` px, default `1`).        |
+| `status`    | `'online' \| 'offline' \| 'busy' \| 'away'` | —          | Presence dot in the corner.                            |
+
+`<AvatarGroup>` overlaps children (`size`, `max`, `spacing`, `ring`, `shape`).
+
 ### Exports
 
 - `Scrollbar`, `GlobalScrollbar`
 - `injectGlobalScrollbarStyles(options)` → cleanup fn
 - `buildGlobalScrollbarCss(options)` → CSS string (for SSR / manual `<style>`)
 - `ensureScrollbarStyles()`, `resolveColors(theme, overrides)`, `scrollbarCss`, `SCROLLBAR_CLASS`
-- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`
+- `Avatar`, `AvatarGroup`
+- `initialsFromName(name, max?)`, `colorFromName(name, palette?)`, `radiusFor(shape, size)`, `AVATAR_PALETTE`, `STATUS_COLORS`
+- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`, `AvatarProps`, `AvatarGroupProps`, `AvatarShape`, `AvatarStatus`
 
 ## Theming
 
