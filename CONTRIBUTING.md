@@ -2,6 +2,21 @@
 
 Thanks for helping build WhereQ's open-source frontend library! 🎉
 
+## Workflow
+
+All changes land on `main` through a reviewed, CI-gated pull request — nobody
+pushes to `main` directly.
+
+1. **Fork** the repo (or, if you have write access, branch from `main`).
+2. Create a branch: `git checkout -b feat/thing` (or `fix/…`, `docs/…`).
+3. Make your change; keep the green bar clean (see below).
+4. Add a **changeset** for any user-facing change (see [Changesets](#changesets)).
+5. Open a PR into `main`. CI runs `typecheck · lint · test · build`; a maintainer
+   reviews and merges.
+
+Releases are cut by merging the automated "Version Packages" PR — see
+[RELEASING.md](./RELEASING.md).
+
 ## Development
 
 ```bash
