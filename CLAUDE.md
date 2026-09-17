@@ -68,7 +68,8 @@ Everything intended for consumers is exported through the module `index.ts` file
 Single-branch model driven by **Changesets** (see `RELEASING.md`). There is one long-lived branch, `main`; nobody pushes to it directly or publishes from a dev machine.
 
 - Feature branches → PR into `main`. Record every user-facing change with `pnpm changeset` (drives the version bump + CHANGELOG); commit the `.changeset/*.md` file with the PR.
-- `.github/workflows/release.yml` (the `changesets/action`) runs on push to `main`: with pending changesets it opens/updates a **"release: version packages"** PR (bumps `package.json` + CHANGELOG). **Merging that PR is the release** — the workflow then runs `pnpm run release` (`build` + `changeset publish`), publishes to npm with provenance, pushes the `vX.Y.Z` tag, and creates a GitHub Release.
+- `.github/workflows/release.yml` (the `changesets/action`) runs on push to `main`: with **no** pending changesets it runs `pnpm run release` (`build` + `changeset publish`) → publishes to npm with provenance, pushes the `vX.Y.Z` tag, creates a GitHub Release; with pending changesets it opens/updates a **"release: version packages"** PR (bump + CHANGELOG).
+- Two equivalent ways to get the bump onto `main` (both end in the same CI publish): run **`bin/release.sh`** locally (CLI path — bumps + pushes `main`), or **merge the bot's version PR** (UI path — works with protected `main`). See `RELEASING.md`.
 - `pnpm run release` = `tsup` build + `changeset publish`. Publish credentials live only in CI (`NPM_TOKEN`); provenance via OIDC (`NPM_CONFIG_PROVENANCE`).
 - `changeset publish` is idempotent (won't re-publish an existing version).
 
