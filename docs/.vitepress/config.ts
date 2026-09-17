@@ -28,7 +28,10 @@ export default defineConfig({
       },
       {
         text: 'Components',
-        items: [{ text: 'Scrollbar', link: '/components/scrollbar' }],
+        items: [
+          { text: 'Scrollbar', link: '/components/scrollbar' },
+          { text: 'Avatar', link: '/components/avatar' },
+        ],
       },
       {
         text: 'Guides',
