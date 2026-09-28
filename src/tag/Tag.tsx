@@ -81,12 +81,14 @@ function sizeClasses(size: TagSize): string {
 function variantClasses(variant: TagVariant, dotColor?: string): string {
   switch (variant) {
     case 'subtle':
-      return 'rounded-full border border-[var(--rule)] text-[var(--text-faint)]'
+      // xs radius (2px) — matches the rest of the whereq family (metroUI
+      // style). The two pill variants (solid, link) keep rounded-full.
+      return 'rounded border border-[var(--rule)] text-[var(--text-faint)]'
     case 'solid':
       return 'rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/10 text-[var(--accent)]'
     case 'dot':
       // The dot itself carries the colour; the pill stays neutral.
-      return 'rounded-full border border-[var(--rule)] text-[var(--text-dim)]' + (dotColor ? '' : ' [&]:before:hidden')
+      return 'rounded border border-[var(--rule)] text-[var(--text-dim)]' + (dotColor ? '' : ' [&]:before:hidden')
     case 'link':
       return 'rounded-full border border-[var(--rule)] text-[var(--text-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]'
   }
