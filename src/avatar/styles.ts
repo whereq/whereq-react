@@ -58,9 +58,15 @@ export function colorFromName(name = '', palette: readonly string[] = AVATAR_PAL
   return palette[hash % palette.length] ?? palette[0] ?? '#495057'
 }
 
-/** Resolve the CSS `border-radius` for a given shape + size. */
-export function radiusFor(shape: AvatarShape, size: number): string {
+/** Resolve the CSS `border-radius` for a given shape + size. The
+ *  whereq family uses the metroUI "xs" standard (2px) for rectangular
+ *  surfaces; circle stays 50% (that's the whole point of `circle`).
+ *  `size` is accepted for API backwards-compat but no longer used —
+ *  previously the rounded corner scaled with the avatar (9px at 40px).
+ *  Now it's a flat 2px so all rectangular surfaces in the whereq apps
+ *  share the same radius. */
+export function radiusFor(shape: AvatarShape, _size: number): string {
   if (shape === 'square') return '0'
-  if (shape === 'rounded') return `${Math.max(2, Math.round(size * 0.22))}px`
+  if (shape === 'rounded') return '2px'
   return '50%'
 }

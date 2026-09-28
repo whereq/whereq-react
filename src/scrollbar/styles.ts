@@ -35,7 +35,9 @@ export function toCssVars(options: ScrollbarStyleOptions): Record<string, string
   const { thumb, thumbHover, track } = resolveColors(theme, options)
   return {
     '--wq-sb-size': `${size}px`,
-    '--wq-sb-radius': `${radius ?? Math.round(size / 2)}px`,
+    // Default radius is xs (2px) so the scrollbar fits the whereq family
+    // metroUI standard; pass `radius` to override.
+    '--wq-sb-radius': `${radius ?? 2}px`,
     '--wq-sb-thumb': thumb,
     '--wq-sb-thumb-hover': thumbHover,
     '--wq-sb-track': track,
@@ -68,7 +70,8 @@ export const scrollbarCss = `
 }
 .${SCROLLBAR_CLASS}::-webkit-scrollbar-thumb {
   background: var(--wq-sb-thumb);
-  border-radius: var(--wq-sb-radius, 3px);
+  /* xs (2px) default — matches the rest of the whereq family. */
+  border-radius: var(--wq-sb-radius, 2px);
 }
 .${SCROLLBAR_CLASS}::-webkit-scrollbar-thumb:hover {
   background: var(--wq-sb-thumb-hover);
