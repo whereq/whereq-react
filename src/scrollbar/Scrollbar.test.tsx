@@ -53,9 +53,9 @@ describe('Scrollbar', () => {
     expect(el.style.getPropertyValue('--wq-sb-thumb')).toBe('rgba(255, 255, 255, 0.1)')
   })
 
-  it('defaults radius to half the size', () => {
+  it('defaults radius to xs (2px) to match the whereq family standard', () => {
     render(<Scrollbar data-testid="sb" size={8} />)
-    expect(screen.getByTestId('sb').style.getPropertyValue('--wq-sb-radius')).toBe('4px')
+    expect(screen.getByTestId('sb').style.getPropertyValue('--wq-sb-radius')).toBe('2px')
   })
 
   it('supports horizontal and both axes', () => {
