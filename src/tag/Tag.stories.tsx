@@ -29,6 +29,16 @@ type Story = StoryObj<typeof Tag>
 
 export const Subtle: Story = { args: { children: 'Public · daily' } }
 export const Solid: Story = { args: { variant: 'solid', children: 'Active' } }
+export const SolidColors: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <Tag variant="solid">Default (accent)</Tag>
+      <Tag variant="solid" solidColor="up">Live</Tag>
+      <Tag variant="solid" solidColor="down">Down</Tag>
+      <Tag variant="solid" solidColor="nova">Nova</Tag>
+    </div>
+  ),
+}
 export const Dot: Story = {
   args: { variant: 'dot', dotColor: 'var(--up)', children: 'Operational' } }
 export const Link: Story = {

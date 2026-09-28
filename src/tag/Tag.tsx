@@ -32,7 +32,7 @@ import type { TagProps, TagPropsDefault, TagSize, TagVariant, TagAs } from './ty
  *  The named export below wraps this in a `forwardRef` for ergonomic `ref`
  *  support at the call site. */
 export function TagImpl<T extends TagAs = 'span'>(
-  { variant = 'subtle', size = 'sm', as, dotColor, className, children, ref, ...rest }: TagProps<T>,
+  { variant = 'subtle', size = 'sm', as, dotColor, solidColor, className, children, ref, ...rest }: TagProps<T>,
 ): ReactElement {
   const tag = (as ?? 'span') as TagAs
   return createElement(
@@ -48,7 +48,7 @@ export function TagImpl<T extends TagAs = 'span'>(
       className: [
         'inline-flex items-center gap-1.5 whitespace-nowrap',
         sizeClasses(size),
-        variantClasses(variant, dotColor),
+        variantClasses(variant, dotColor, solidColor),
         className,
       ].filter(Boolean).join(' '),
     },
@@ -78,14 +78,24 @@ function sizeClasses(size: TagSize): string {
     : 'px-2 py-0.5 text-[10px] uppercase tracking-wide'
 }
 
-function variantClasses(variant: TagVariant, dotColor?: string): string {
+function variantClasses(variant: TagVariant, dotColor?: string, solidColor?: string): string {
   switch (variant) {
     case 'subtle':
       // xs radius (2px) — matches the rest of the whereq family (metroUI
       // style). The two pill variants (solid, link) keep rounded-full.
       return 'rounded border border-[var(--rule)] text-[var(--text-faint)]'
-    case 'solid':
-      return 'rounded-full border border-[var(--accent)]/30 bg-[var(--accent)]/10 text-[var(--accent)]'
+    case 'solid': {
+      // solidColor defaults to "accent"; pass a token or raw CSS value
+      // to recolor the pill (e.g. "up" for a green "live" indicator).
+      const color = solidColor ?? 'accent'
+      // Accept either a design token ("accent" / "up" / "down" / "nova")
+      // or a raw CSS colour ("var(--foo)" / "#ff0000"). For tokens we use
+      // the same /30 border + /10 bg + plain text colour that the
+      // default solid uses for "accent".
+      const isToken = color === 'accent' || color === 'up' || color === 'down' || color === 'nova'
+      const colorVar = isToken ? `var(--${color})` : color
+      return `rounded-full border ${colorVar}/30 bg-[${colorVar}]/10 text-[${colorVar}]`
+    }
     case 'dot':
       // The dot itself carries the colour; the pill stays neutral.
       return 'rounded border border-[var(--rule)] text-[var(--text-dim)]' + (dotColor ? '' : ' [&]:before:hidden')
@@ -99,6 +109,7 @@ export function tagClasses(
   variant: TagVariant = 'subtle',
   size: TagSize = 'sm',
   dotColor?: string,
+  solidColor?: string,
 ): string {
-  return `${sizeClasses(size)} ${variantClasses(variant, dotColor)}`
+  return `${sizeClasses(size)} ${variantClasses(variant, dotColor, solidColor)}`
 }
