@@ -40,7 +40,8 @@ describe('radiusFor', () => {
   it('maps shapes to radii', () => {
     expect(radiusFor('circle', 40)).toBe('50%')
     expect(radiusFor('square', 40)).toBe('0')
-    expect(radiusFor('rounded', 40)).toBe('9px')
+    // xs (2px) for rounded — matches the rest of the whereq family.
+    expect(radiusFor('rounded', 40)).toBe('2px')
   })
 })
 
