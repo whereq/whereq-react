@@ -13,7 +13,9 @@ describe('Tag', () => {
     const { container } = render(<Tag>x</Tag>)
     const el = container.firstChild as HTMLElement
     expect(el.className).toContain('border-[var(--rule)]')
-    expect(el.className).toContain('rounded-full')
+    // subtle is xs (Tailwind rounded), not a pill — only solid/link get rounded-full
+    expect(el.className).toContain('rounded')
+    expect(el.className).not.toContain('rounded-full')
     expect(el.className).toContain('text-[10px]')
     expect(el.className).toContain('uppercase')
   })
