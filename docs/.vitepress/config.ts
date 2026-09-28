@@ -35,7 +35,11 @@ export default defineConfig({
       },
       {
         text: 'Guides',
-        items: [{ text: 'Theming', link: '/guide/theming' }],
+        items: [
+          { text: 'Theming', link: '/guide/theming' },
+          { text: 'CI/CD Pipeline', link: '/ci-cd' },
+          { text: 'Release Helper', link: '/release-helper' },
+        ],
       },
     ],
     socialLinks: [{ icon: 'github', link: 'https://github.com/whereq/whereq-react' }],

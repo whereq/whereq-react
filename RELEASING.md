@@ -5,6 +5,15 @@ There is **one long-lived branch, `main`**. You never publish from a developer
 machine and you never push directly to `main` — everything goes through PRs, and
 CI does the publishing. npm credentials (`NPM_TOKEN`) live only in CI.
 
+> 📖 **Looking for the full reference?** See
+> [docs/ci-cd.md](./docs/ci-cd.md) — the comprehensive pipeline doc covering every
+> scenario (bug fix / feature / breaking / docs-only / hotfix / pre-release), with
+> diagrams, step-by-step commands, and troubleshooting.
+>
+> 🚀 **Just want the cheat sheet?** See
+> [docs/release-helper.md](./docs/release-helper.md) — quick reference for
+> `bin/release.sh prepare` / `tag`.
+
 ## The flow at a glance
 
 ```
