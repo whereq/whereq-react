@@ -3,10 +3,13 @@ import type { CSSProperties } from 'react'
 import { FLAG_VIEWBOX, lookupFlag } from './flags'
 import type { CountryFlagProps } from './types'
 
-/** Maps {@link CountryFlagShape} to a CSS `border-radius`. */
+/** Maps {@link CountryFlagShape} to a CSS `border-radius`. The
+ *  whereq family apps all use the metroUI "xs" radius (2px) for
+ *  rectangular surfaces; `circle` is the only deviation, kept for
+ *  avatar-style use cases. */
 const RADIUS: Record<NonNullable<CountryFlagProps['shape']>, string> = {
   rect: '2px',
-  rounded: '4px',
+  rounded: '2px',
   circle: '50%',
 }
 
