@@ -3,7 +3,7 @@
 # @whereq/react
 
 **WhereQ's open-source React component library.**
-Lightweight, accessible, themeable UI primitives — a thin **Scrollbar** and a generic **Avatar**.
+Lightweight, accessible, themeable UI primitives — a thin **Scrollbar**, a generic **Avatar**, an inline-SVG **CountryFlag**, a multi-variant **Tag**, and a portal-style **Toast**.
 
 [![npm version](https://img.shields.io/npm/v/@whereq/react.svg)](https://www.npmjs.com/package/@whereq/react)
 [![npm downloads](https://img.shields.io/npm/dm/@whereq/react.svg)](https://www.npmjs.com/package/@whereq/react)
@@ -28,6 +28,7 @@ keyboard, touch, and accessibility all keep working, with zero runtime scroll ma
 - 🙈 **Auto-hide** — optionally reveal the thumb only on hover / while scrolling.
 - ♿ **Accessible & native** — real scrollbars, real keyboard & screen-reader behaviour.
 - 🧩 **SSR-safe & RSC-ready** — ships a `"use client"` boundary; styles inject before paint.
+- 🔔 **Toasts included** — built-in ToastProvider + imperative `toast.error("…")` API with 4 variants and 6 positions.
 - 🔠 **First-class TypeScript** — full types, ESM + CJS.
 
 ## Install
@@ -168,7 +169,12 @@ Extends `React.HTMLAttributes<HTMLSpanElement>` (minus `color`). Full table in t
 - `ensureScrollbarStyles()`, `resolveColors(theme, overrides)`, `scrollbarCss`, `SCROLLBAR_CLASS`
 - `Avatar`, `AvatarGroup`
 - `initialsFromName(name, max?)`, `colorFromName(name, palette?)`, `radiusFor(shape, size)`, `AVATAR_PALETTE`, `STATUS_COLORS`
-- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`, `AvatarProps`, `AvatarGroupProps`, `AvatarShape`, `AvatarStatus`
+- `CountryFlag` — props: `country` (ISO 3166-1 alpha-2), `size`, `shape`, `fit`, `className`, `alt`
+- `lookupFlag(slug)`, `isSupported(slug)`, `FLAG_CATALOG`, `SUPPORTED_SLUGS`, `FLAG_VIEWBOX`, `star5(cx, cy, r)`
+- `Tag`, `TagImpl<T>` — props: `variant` (subtle/solid/dot/link), `size` (sm/md), `as` (span/a/button/div), `solidColor`, `dotColor`, `className`, `children`
+- `tagClasses(variant?, size?, dotColor?, solidColor?)` — pure helper
+- `toast` (imperative handle), `ToastProvider`, `ToastViewport`, `useToast` / `useToastContext`
+- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`, `AvatarProps`, `AvatarGroupProps`, `AvatarShape`, `AvatarStatus`, `CountryFlagProps`, `CountryFlagShape`, `CountryFlagFit`, `CountrySlug`, `TagProps`, `TagPropsDefault`, `TagVariant`, `TagSize`, `TagAs`, `ToastApi`, `ToastItem`, `ToastOptions`, `ToastPosition`, `ToastVariant`, `ToastViewportProps`, `ToastContextValue`
 
 ## Theming
 

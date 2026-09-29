@@ -14,7 +14,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/getting-started' },
-      { text: 'Components', link: '/components/scrollbar' },
+      { text: 'Components', link: '/components/scrollbar' }, // first component; see sidebar for full list
       { text: 'Storybook', link: '/storybook/' },
       { text: 'npm', link: 'https://www.npmjs.com/package/@whereq/react' },
     ],
@@ -31,6 +31,9 @@ export default defineConfig({
         items: [
           { text: 'Scrollbar', link: '/components/scrollbar' },
           { text: 'Avatar', link: '/components/avatar' },
+          { text: 'CountryFlag', link: '/components/country-flag' },
+          { text: 'Tag', link: '/components/tag' },
+          { text: 'Toast', link: '/components/toast' },
         ],
       },
       {
