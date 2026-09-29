@@ -4,13 +4,13 @@ layout: home
 hero:
   name: '@whereq/react'
   text: "WhereQ's React component library"
-  tagline: Lightweight, accessible, themeable UI primitives — starting with a beautiful thin Scrollbar.
+  tagline: Lightweight, accessible, themeable UI primitives — Scrollbar, Avatar, CountryFlag, Tag, and Toast.
   actions:
     - theme: brand
       text: Get Started
       link: /getting-started
     - theme: alt
-      text: Scrollbar
+      text: Components
       link: /components/scrollbar
     - theme: alt
       text: GitHub
