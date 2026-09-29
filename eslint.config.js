@@ -30,6 +30,23 @@ export default [
       // TypeScript itself checks for undefined identifiers; the core rule has no
       // knowledge of DOM/Node globals and produces false positives.
       'no-undef': 'off',
+      // Use the TS-aware no-unused-vars so we can honour the `_`-prefix
+      // convention for intentionally-unused function parameters and locals
+      // (common pattern: keep `_size: number` in the signature for API
+      // backwards-compat while dropping the body usage).
+      'no-unused-vars': 'off',  // superseded by the @typescript-eslint rule below
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
