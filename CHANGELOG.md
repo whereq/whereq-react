@@ -1,28 +1,5 @@
 # @whereq/react
 
-## 0.4.2
-
-### Patch Changes
-
-- ce8240f: `Scrollbar` + `Avatar` use the whereq family's metroUI "xs" radius (2px)
-  by default, matching the rest of the whereq family surface.
-
-  - `Scrollbar`: default `--wq-sb-radius` is now `2px` (was `size/2`,
-    typically 4px). CSS `border-radius` fallback is now `2px` (was `3px`).
-    Pass `radius` to override.
-  - `Avatar`: `radiusFor('rounded', size)` returns `2px` (was
-    `Math.max(2, size * 0.22)px`, up to 22% of the avatar dimension).
-    `circle` and `square` are unchanged.
-
-  Tests updated. Build succeeds.
-
-- ce8240f: `Tag`: add a `solidColor` prop to the `solid` variant. Defaults to the
-  design token `"accent"`. Accepts one of the existing CSS variables
-  (`"accent"`, `"up"`, `"down"`, `"nova"`) or a raw CSS colour value. Lets
-  callers reuse the `solid` "filled coloured pill" look with arbitrary
-  colours — e.g. a green "Live" indicator (`solidColor="up"`) without
-  writing a new variant. New test coverage + Storybook story included.
-
 ## 0.4.1
 
 ### Patch Changes
