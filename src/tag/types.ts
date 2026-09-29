@@ -37,6 +37,10 @@ export type TagProps<T extends TagAs = 'span'> = Omit<TagPropsByAs[T], 'children
   children: ReactNode
   /** Optional leading dot colour (used with `variant="dot"`). */
   dotColor?: string
+  /** Optional colour token for the `solid` variant. Use one of the design
+   *  tokens (`accent`, `up`, `down`, `nova`) or a raw CSS value. Defaults
+   *  to `accent` for the standard "selected/active" appearance. */
+  solidColor?: 'accent' | 'up' | 'down' | 'nova' | string
   /** Render as this element. Default `'span'`. */
   as?: T
 }

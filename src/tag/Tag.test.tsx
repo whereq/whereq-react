@@ -77,6 +77,19 @@ describe('Tag', () => {
     const { container } = render(<Tag size="md">x</Tag>)
     expect((container.firstChild as HTMLElement).className).toContain('text-sm')
   })
+
+  it('applies the solidColor token to the solid variant', () => {
+    // Default = accent
+    const accent = render(<Tag variant="solid">x</Tag>)
+    expect((accent.container.firstChild as HTMLElement).className).toContain('text-[var(--accent)]')
+    // "up" token → green
+    const up = render(<Tag variant="solid" solidColor="up">Live</Tag>)
+    expect((up.container.firstChild as HTMLElement).className).toContain('text-[var(--up)]')
+    expect((up.container.firstChild as HTMLElement).className).toContain('bg-[var(--up)]/10')
+    // Raw CSS value
+    const raw = render(<Tag variant="solid" solidColor="#ff0">x</Tag>)
+    expect((raw.container.firstChild as HTMLElement).className).toContain('text-[#ff0]')
+  })
 })
 
 describe('tagClasses helper', () => {
