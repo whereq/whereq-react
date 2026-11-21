@@ -94,7 +94,11 @@ function variantClasses(variant: TagVariant, dotColor?: string, solidColor?: str
       // default solid uses for "accent".
       const isToken = color === 'accent' || color === 'up' || color === 'down' || color === 'nova'
       const colorVar = isToken ? `var(--${color})` : color
-      return `rounded-full border ${colorVar}/30 bg-[${colorVar}]/10 text-[${colorVar}]`
+      // The colour has to go through the arbitrary-value form
+      // (`border-[<colour>]/30`). A bare `border <colour>/30` is two
+      // class names, and the second one is not a utility — the pill
+      // would end up with a border but in the wrong colour.
+      return `rounded-full border-[${colorVar}]/30 bg-[${colorVar}]/10 text-[${colorVar}]`
     }
     case 'dot':
       // The dot itself carries the colour; the pill stays neutral.
