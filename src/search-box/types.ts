@@ -66,7 +66,10 @@ export type SearchBoxSubmitBehavior = 'select-then-submit' | 'always-submit'
 
 /** Props for the {@link SearchBox} component. */
 export interface SearchBoxProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onChange' | 'onSubmit' | 'onSelect'> {
+  extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'children' | 'onChange' | 'onSubmit' | 'onSelect' | 'onFocus' | 'onBlur'
+  > {
   /** The current text in the box. */
   value: string
   /** Called on every keystroke (and on clear) with the new text. */
