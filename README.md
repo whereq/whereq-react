@@ -125,6 +125,31 @@ import { Avatar, AvatarGroup } from '@whereq/react'
 </AvatarGroup>
 ```
 
+### `<SearchBox>` — a search field with a suggestion dropdown
+
+The component owns everything that is *not* domain logic: the field, the magnifier
+(submit), the clear button, the dropdown, the keyboard navigation, the ARIA wiring
+and the click-outside behaviour. The caller supplies the data and the two callbacks
+that mean something to the domain — so a map place picker, a people picker and a
+command palette all render the same box.
+
+```tsx
+import { SearchBox } from '@whereq/react'
+
+;<SearchBox
+  value={query}
+  onChange={setQuery}
+  loading={loading}
+  suggestions={suggestions} // [{ key, label, description }]
+  onSelect={(s) => pick(s)} // a suggestion was chosen
+  onSubmit={(text) => search(text)} // free text was submitted
+/>
+```
+
+Keyboard: `↑` / `↓` move the highlight (wrapping), `Enter` picks the highlighted
+suggestion — or submits the text when nothing is highlighted — and `Escape` closes
+the list.
+
 ## API
 
 ### `<Scrollbar>` props
@@ -161,6 +186,35 @@ Extends `React.HTMLAttributes<HTMLSpanElement>` (minus `color`). Full table in t
 
 `<AvatarGroup>` overlaps children (`size`, `max`, `spacing`, `ring`, `shape`).
 
+### `<SearchBox>` props
+
+Extends `React.HTMLAttributes<HTMLDivElement>` (minus `children`, `onChange`,
+`onSubmit` and `onSelect`, which the component owns).
+
+| Prop                | Type                                                   | Default            | Description                                                   |
+| ------------------- | ------------------------------------------------------ | ------------------ | ------------------------------------------------------------- |
+| `value`             | `string`                                               | —                  | The current text in the box.                                   |
+| `onChange`          | `(value: string) => void`                              | —                  | Called on every keystroke and on clear.                        |
+| `suggestions`       | `SearchBoxSuggestion[]`                                | `[]`               | `{ key, label, description? }` — an empty list hides the list. |
+| `onSelect`          | `(suggestion, index) => void`                          | —                  | A suggestion was picked (click or Enter).                      |
+| `onSubmit`          | `(value: string) => void`                              | —                  | The text was submitted and no suggestion was picked.            |
+| `loading`           | `boolean`                                              | `false`            | Shows the "Searching…" status line.                            |
+| `loadingText`       | `string`                                               | `'Searching…'`     | The status line's text.                                        |
+| `placeholder`       | `string`                                               | `'Search'`         | Placeholder text.                                               |
+| `label`             | `string`                                               | `placeholder`      | Accessible name of the input.                                  |
+| `submitLabel`       | `string`                                               | `'Search'`         | Accessible name of the magnifier.                               |
+| `clearLabel`        | `string`                                               | `'Clear search'`   | Accessible name of the clear button.                           |
+| `disabled`          | `boolean`                                              | `false`            | Disables the whole box.                                         |
+| `clearable`         | `boolean`                                              | `true`             | Shows the clear (×) button while there is text.                |
+| `showSubmit`        | `boolean`                                              | `true`             | Shows the leading magnifier.                                    |
+| `submitBehavior`    | `'select-then-submit' \| 'always-submit'`              | `'select-then-submit'` | What Enter / the magnifier does.                           |
+| `onHighlightChange` | `(index: number) => void`                              | —                  | Fired when the keyboard highlight moves.                       |
+| `theme`             | `SearchBoxTheme`                                       | —                  | Colour + shape tokens (see [Theming](#theming)).               |
+| `inputId`           | `string`                                               | generated          | The input's id; also seeds the listbox id.                     |
+| `inputClassName`    | `string`                                               | —                  | Extra classes for the input.                                   |
+| `listClassName`     | `string`                                               | —                  | Extra classes for the suggestion list.                         |
+| `inputRef`          | `Ref<HTMLInputElement>`                                | —                  | Ref to the input element.                                      |
+
 ### Exports
 
 - `Scrollbar`, `GlobalScrollbar`
@@ -174,7 +228,9 @@ Extends `React.HTMLAttributes<HTMLSpanElement>` (minus `color`). Full table in t
 - `Tag`, `TagImpl<T>` — props: `variant` (subtle/solid/dot/link), `size` (sm/md), `as` (span/a/button/div), `solidColor`, `dotColor`, `className`, `children`
 - `tagClasses(variant?, size?, dotColor?, solidColor?)` — pure helper
 - `toast` (imperative handle), `ToastProvider`, `ToastViewport`, `useToast` / `useToastContext`
-- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`, `AvatarProps`, `AvatarGroupProps`, `AvatarShape`, `AvatarStatus`, `CountryFlagProps`, `CountryFlagShape`, `CountryFlagFit`, `CountrySlug`, `TagProps`, `TagPropsDefault`, `TagVariant`, `TagSize`, `TagAs`, `ToastApi`, `ToastItem`, `ToastOptions`, `ToastPosition`, `ToastVariant`, `ToastViewportProps`, `ToastContextValue`
+- `SearchBox` — props: `value`, `onChange`, `suggestions`, `onSelect`, `onSubmit`, `loading`, `loadingText`, `placeholder`, `label`, `submitLabel`, `clearLabel`, `disabled`, `clearable`, `showSubmit`, `submitBehavior`, `onHighlightChange`, `theme`, `inputId`, `inputClassName`, `listClassName`, `inputRef`
+- `ensureSearchBoxStyles()`, `searchBoxCss`, `toCssVars(theme)`, `DEFAULT_SEARCH_THEME`, `SEARCH_BOX_CLASS` and the `SEARCH_*_CLASS` constants
+- Types: `ScrollbarProps`, `ScrollbarAxis`, `ScrollbarTheme`, `ScrollbarColors`, `ScrollbarStyleOptions`, `FirefoxScrollbarWidth`, `GlobalScrollbarOptions`, `AvatarProps`, `AvatarGroupProps`, `AvatarShape`, `AvatarStatus`, `CountryFlagProps`, `CountryFlagShape`, `CountryFlagFit`, `CountrySlug`, `TagProps`, `TagPropsDefault`, `TagVariant`, `TagSize`, `TagAs`, `ToastApi`, `ToastItem`, `ToastOptions`, `ToastPosition`, `ToastVariant`, `ToastViewportProps`, `ToastContextValue`, `SearchBoxProps`, `SearchBoxSuggestion`, `SearchBoxTheme`, `SearchBoxSubmitBehavior`
 
 ## Theming
 
@@ -197,6 +253,27 @@ Override individual tokens per instance:
   --wq-sb-thumb: rgba(255, 255, 255, 0.1);
   --wq-sb-thumb-hover: rgba(255, 255, 255, 0.2);
   --wq-sb-size: 6px;
+}
+```
+
+`<SearchBox>` is themed the same way — through the `--wq-search-*` custom
+properties (`--wq-search-field-bg`, `--wq-search-field-border`,
+`--wq-search-field-border-focus`, `--wq-search-text`, `--wq-search-placeholder`,
+`--wq-search-icon`, `--wq-search-icon-hover`, `--wq-search-list-bg`,
+`--wq-search-list-border`, `--wq-search-list-text`,
+`--wq-search-list-description`, `--wq-search-list-active-bg`,
+`--wq-search-list-active-text`, `--wq-search-radius`, `--wq-search-shadow`,
+`--wq-search-font`, `--wq-search-font-size`). Set them with the `theme` prop or
+straight from CSS:
+
+```tsx
+<SearchBox theme={{ fieldBg: '#0f172a', listActiveText: '#38bdf8' }} … />
+```
+
+```css
+.wq-search {
+  --wq-search-field-bg: #0f172a;
+  --wq-search-list-active-text: #38bdf8;
 }
 ```
 
