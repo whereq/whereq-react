@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`@whereq/react` is a lightweight, tree-shakeable React component library published to npm. It ships ESM + CJS + `.d.ts` and targets React >= 18 (peer dependency). Components are UI primitives extracted from [whereq.cc](https://whereq.cc) — currently a native-scrollbar container and an Avatar.
+`@whereq/react` is a lightweight, tree-shakeable React component library published to npm. It ships ESM + CJS + `.d.ts` and targets React >= 18 (peer dependency). Components are UI primitives extracted from the whereq family of apps — currently a native-scrollbar container, an Avatar, a CountryFlag, a Tag, a Toast stack and a generic SearchBox.
 
 ## Commands
 
@@ -54,6 +54,7 @@ The library injects raw CSS into `document.head` rather than shipping a styleshe
 - `GlobalScrollbar` is a render-nothing component wrapping `injectGlobalScrollbarStyles`, which is idempotent (replaces its `<style>` on re-invoke) and returns a cleanup function.
 - All injection helpers are SSR-safe: they no-op when `typeof document === 'undefined'`.
 - Theme presets live in `styles.ts` (`THEMES`, `AVATAR_PALETTE`, `STATUS_COLORS`). `theme="auto"` uses the CSS `light-dark()` function, so it only adapts if the page declares a `color-scheme`.
+- **SearchBox** follows the same model: a base stylesheet injected once (`ensureSearchBoxStyles`), with every colour and shape carried by a `--wq-search-*` custom property. The `theme` prop only sets the tokens the caller actually passed, so the stylesheet still wins for the rest.
 
 ### `"use client"` handling
 
