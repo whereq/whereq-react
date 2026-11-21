@@ -1,6 +1,6 @@
 {
   "name": "@whereq/react",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "WhereQ's open-source React component library. Lightweight, accessible, themeable UI primitives — a thin Scrollbar, an Avatar, a CountryFlag, a Tag, a Toast stack and a generic SearchBox.",
   "keywords": [
     "react",
