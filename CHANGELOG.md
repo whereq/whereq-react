@@ -1,5 +1,15 @@
 # @whereq/react
 
+## 0.9.1
+
+### Patch Changes
+
+- fd4afdc: Report the input's focus to the consumer.
+
+  `onFocus` and `onBlur` are forwarded to the input. A consumer whose box
+  shows a _picked_ value needs them: focusing the box selects the text, so
+  the first keystroke replaces it instead of appending to it.
+
 ## 0.9.0
 
 ### Minor Changes
