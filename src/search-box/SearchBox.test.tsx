@@ -256,4 +256,11 @@ describe('SearchBox', () => {
     )
     expect(container.querySelectorAll('li.my-row')).toHaveLength(3)
   })
+
+  it('reports the input focus', () => {
+    const onFocus = vi.fn()
+    render(<SearchBox value="Banff" onChange={() => {}} onFocus={onFocus} />)
+    fireEvent.focus(screen.getByRole('combobox'))
+    expect(onFocus).toHaveBeenCalledTimes(1)
+  })
 })
