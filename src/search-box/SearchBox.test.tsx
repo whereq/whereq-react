@@ -205,4 +205,55 @@ describe('SearchBox', () => {
     fireEvent.change(input, { target: { value: 'ban' } })
     expect(input.value).toBe('ban')
   })
+
+  it('renders the rows through renderOption', () => {
+    render(
+      <SearchBox
+        value="ban"
+        onChange={() => {}}
+        suggestions={SUGGESTIONS}
+        renderOption={(s, index, active) => (
+          <span data-testid={`row-${index}`} data-active={active ? 'yes' : 'no'}>
+            {s.label}
+          </span>
+        )}
+      />,
+    )
+    const rows = screen.getAllByTestId(/^row-/)
+    expect(rows).toHaveLength(3)
+    expect(rows[0]?.textContent).toBe('Banff')
+    expect(rows[0]?.getAttribute('data-active')).toBe('yes')
+  })
+
+  it('shows the empty text when nothing matched', () => {
+    render(<SearchBox value="zzz" onChange={() => {}} suggestions={[]} emptyText="Nothing found" />)
+    expect(screen.getByText('Nothing found')).toBeTruthy()
+  })
+
+  it('does not show the empty text for an empty query', () => {
+    render(<SearchBox value="" onChange={() => {}} suggestions={[]} emptyText="Nothing found" />)
+    expect(screen.queryByText('Nothing found')).toBeNull()
+  })
+
+  it('hands the clear to onClear when it is given', () => {
+    const onClear = vi.fn()
+    const onChange = vi.fn()
+    render(<SearchBox value="Banff" onChange={onChange} onClear={onClear} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }))
+    expect(onClear).toHaveBeenCalledTimes(1)
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
+  it('renders the magnifier as decoration when there is nothing to submit', () => {
+    const { container } = render(<SearchBox value="ban" onChange={() => {}} />)
+    expect(screen.queryByRole('button', { name: 'Search' })).toBeNull()
+    expect(container.querySelector('.wq-search__submit')?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('adds the option classes to every row', () => {
+    const { container } = render(
+      <SearchBox value="ban" onChange={() => {}} suggestions={SUGGESTIONS} optionClassName="my-row" />,
+    )
+    expect(container.querySelectorAll('li.my-row')).toHaveLength(3)
+  })
 })

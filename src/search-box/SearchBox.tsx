@@ -88,6 +88,9 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
     suggestions = [],
     onSelect,
     onSubmit,
+    onClear,
+    renderOption,
+    emptyText,
     loading = false,
     loadingText = 'Searching…',
     placeholder = 'Search',
@@ -103,6 +106,7 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
     inputId,
     inputClassName,
     listClassName,
+    optionClassName,
     inputRef,
     className,
     style,
@@ -201,11 +205,17 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
     onSubmit?.(text)
   }, [highlighted, onSubmit, pick, submitBehavior, value])
 
-  /** Empty the box. */
+  /** Empty the box — or hand the clear to the consumer, which may keep the
+   *  query behind a picked result instead of throwing it away. */
   const clear = useCallback(() => {
+    if (onClear) {
+      onClear()
+      localInputRef.current?.focus()
+      return
+    }
     onChange('')
     localInputRef.current?.focus()
-  }, [onChange])
+  }, [onChange, onClear])
 
   /** Move the keyboard highlight, wrapping around at both ends. */
   const moveHighlight = useCallback((delta: number) => {
@@ -270,18 +280,25 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
       style={{ ...(cssVars as CSSProperties), ...style }}
     >
       <div className={SEARCH_FIELD_CLASS}>
-        {showSubmit && (
-          <button
-            type="button"
-            onClick={submit}
-            aria-label={submitLabel}
-            title={submitLabel}
-            disabled={disabled}
-            className={SEARCH_SUBMIT_CLASS}
-          >
-            <SearchIcon />
-          </button>
-        )}
+        {showSubmit &&
+          // With nothing to submit, the magnifier is decoration — a search
+          // that runs as you type does not need a submit button.
+          (onSubmit ? (
+            <button
+              type="button"
+              onClick={submit}
+              aria-label={submitLabel}
+              title={submitLabel}
+              disabled={disabled}
+              className={SEARCH_SUBMIT_CLASS}
+            >
+              <SearchIcon />
+            </button>
+          ) : (
+            <span aria-hidden="true" className={SEARCH_SUBMIT_CLASS}>
+              <SearchIcon />
+            </span>
+          ))}
         <input
           id={id}
           ref={setRefs}
@@ -323,13 +340,19 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
               role="option"
               aria-selected={index === activeIndex}
               data-active={index === activeIndex}
-              className={SEARCH_OPTION_CLASS}
+              className={cx(SEARCH_OPTION_CLASS, optionClassName)}
               onMouseEnter={() => setHighlighted(index)}
               onMouseDown={(event) => handleOptionMouseDown(event, index)}
             >
-              <span className={SEARCH_LABEL_CLASS}>{suggestion.label}</span>
-              {suggestion.description && (
-                <span className={SEARCH_DESCRIPTION_CLASS}>{suggestion.description}</span>
+              {renderOption ? (
+                renderOption(suggestion, index, index === activeIndex)
+              ) : (
+                <>
+                  <span className={SEARCH_LABEL_CLASS}>{suggestion.label}</span>
+                  {suggestion.description && (
+                    <span className={SEARCH_DESCRIPTION_CLASS}>{suggestion.description}</span>
+                  )}
+                </>
               )}
             </li>
           ))}
@@ -337,6 +360,10 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
       )}
 
       {loading && <div className={SEARCH_STATUS_CLASS}>{loadingText}</div>}
+
+      {!loading && !isOpen && emptyText && value.trim() && (
+        <div className={SEARCH_STATUS_CLASS}>{emptyText}</div>
+      )}
     </div>
   )
 })
