@@ -150,6 +150,23 @@ Keyboard: `↑` / `↓` move the highlight (wrapping), `Enter` picks the highlig
 suggestion — or submits the text when nothing is highlighted — and `Escape` closes
 the list.
 
+Three small hooks let a consumer adapt the box without giving up the parts that
+are easy to get wrong:
+
+- **`renderOption`** — draw the row yourself (a leading badge, a name and a
+  value on one line). The default stacks the label above the description.
+- **`emptyText`** — say "nothing found" instead of closing the dropdown.
+- **`onClear`** — the clear (×) can do something else than empty the box; a
+  consumer that keeps the typed query behind a picked result uses it to bring
+  that query back.
+
+Without an `onSubmit` the magnifier is decoration rather than a submit button —
+a search that runs as you type does not need one.
+
+The base stylesheet is injected at the **front** of `<head>`, so an app's own
+stylesheet wins against a rule of the same specificity: a consumer can change
+any part of the box from plain CSS.
+
 ## API
 
 ### `<Scrollbar>` props
@@ -198,6 +215,9 @@ Extends `React.HTMLAttributes<HTMLDivElement>` (minus `children`, `onChange`,
 | `suggestions`       | `SearchBoxSuggestion[]`                                | `[]`               | `{ key, label, description? }` — an empty list hides the list. |
 | `onSelect`          | `(suggestion, index) => void`                          | —                  | A suggestion was picked (click or Enter).                      |
 | `onSubmit`          | `(value: string) => void`                              | —                  | The text was submitted and no suggestion was picked.            |
+| `onClear`           | `() => void`                                           | —                  | Called by the clear (×) instead of clearing the value.         |
+| `renderOption`      | `(suggestion, index, active) => ReactNode`             | —                  | Draws one suggestion row yourself.                              |
+| `emptyText`         | `string`                                               | —                  | Shown when the query is not empty and nothing matched.         |
 | `loading`           | `boolean`                                              | `false`            | Shows the "Searching…" status line.                            |
 | `loadingText`       | `string`                                               | `'Searching…'`     | The status line's text.                                        |
 | `placeholder`       | `string`                                               | `'Search'`         | Placeholder text.                                               |
@@ -213,6 +233,7 @@ Extends `React.HTMLAttributes<HTMLDivElement>` (minus `children`, `onChange`,
 | `inputId`           | `string`                                               | generated          | The input's id; also seeds the listbox id.                     |
 | `inputClassName`    | `string`                                               | —                  | Extra classes for the input.                                   |
 | `listClassName`     | `string`                                               | —                  | Extra classes for the suggestion list.                         |
+| `optionClassName`   | `string`                                               | —                  | Extra classes for each suggestion row.                         |
 | `inputRef`          | `Ref<HTMLInputElement>`                                | —                  | Ref to the input element.                                      |
 
 ### Exports
