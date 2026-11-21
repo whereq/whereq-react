@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode, Ref } from 'react'
+import type { FocusEventHandler, HTMLAttributes, ReactNode, Ref } from 'react'
 
 /** One entry in the suggestion list. */
 export interface SearchBoxSuggestion {
@@ -131,4 +131,13 @@ export interface SearchBoxProps
   optionClassName?: string
   /** Ref to the input element. */
   inputRef?: Ref<HTMLInputElement>
+  /**
+   * Called when the input is focused.
+   *
+   * A consumer whose box shows a *picked* value focuses it to select the
+   * text, so the first keystroke replaces it instead of appending to it.
+   */
+  onFocus?: FocusEventHandler<HTMLInputElement>
+  /** Called when the input loses focus. */
+  onBlur?: FocusEventHandler<HTMLInputElement>
 }

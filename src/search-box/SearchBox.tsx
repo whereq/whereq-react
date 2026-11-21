@@ -108,6 +108,8 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
     listClassName,
     optionClassName,
     inputRef,
+    onFocus,
+    onBlur,
     className,
     style,
     ...rest
@@ -315,6 +317,8 @@ export const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(function Sea
           value={value}
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
+          onBlur={onBlur}
           autoComplete="off"
         />
         {clearable && value && (
