@@ -234,6 +234,8 @@ Extends `React.HTMLAttributes<HTMLDivElement>` (minus `children`, `onChange`,
 | `inputClassName`    | `string`                                               | —                  | Extra classes for the input.                                   |
 | `listClassName`     | `string`                                               | —                  | Extra classes for the suggestion list.                         |
 | `optionClassName`   | `string`                                               | —                  | Extra classes for each suggestion row.                         |
+| `onFocus`          | `FocusEventHandler<HTMLInputElement>`                   | —                  | Fired when the input is focused.                                |
+| `onBlur`           | `FocusEventHandler<HTMLInputElement>`                   | —                  | Fired when the input loses focus.                               |
 | `inputRef`          | `Ref<HTMLInputElement>`                                | —                  | Ref to the input element.                                      |
 
 ### Exports
