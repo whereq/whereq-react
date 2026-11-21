@@ -77,6 +77,26 @@ export interface SearchBoxProps
   onSelect?: (suggestion: SearchBoxSuggestion, index: number) => void
   /** Called when the text is submitted and no suggestion was picked. */
   onSubmit?: (value: string) => void
+  /**
+   * Called by the clear (×) button instead of clearing the value.
+   *
+   * A consumer that keeps the typed query behind a picked result wants the ×
+   * to bring that query back rather than empty the box.
+   */
+  onClear?: () => void
+  /**
+   * Renders one suggestion row.
+   *
+   * The default draws the label above the description. A consumer whose rows
+   * have their own shape — a leading badge, a name and a value on one line —
+   * draws them here instead.
+   */
+  renderOption?: (suggestion: SearchBoxSuggestion, index: number, active: boolean) => ReactNode
+  /**
+   * Shown under the field when the query is not empty and nothing matched.
+   * Without it, an empty result set simply closes the dropdown.
+   */
+  emptyText?: string
   /** Shows the "Searching…" status line under the field. */
   loading?: boolean
   /** The status line shown while `loading`. Default `'Searching…'`. */
@@ -107,6 +127,8 @@ export interface SearchBoxProps
   inputClassName?: string
   /** Extra classes for the suggestion list. */
   listClassName?: string
+  /** Extra classes for each suggestion row. */
+  optionClassName?: string
   /** Ref to the input element. */
   inputRef?: Ref<HTMLInputElement>
 }
