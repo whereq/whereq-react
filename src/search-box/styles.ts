@@ -197,6 +197,7 @@ export const searchBoxCss = `
   padding: 8px 12px;
   cursor: pointer;
   color: var(--wq-search-list-text, ${DEFAULT_SEARCH_THEME.listText});
+  font-size: var(--wq-search-font-size, ${DEFAULT_SEARCH_THEME.fontSize});
   text-align: left;
 }
 
@@ -240,12 +241,19 @@ export const searchBoxCss = `
 
 const STYLE_ID = 'wq-search-box-styles'
 
-/** Inject the base {@link SearchBox} stylesheet once. No-op on the server / repeat calls. */
+/**
+ * Inject the base {@link SearchBox} stylesheet once. No-op on the server / repeat calls.
+ *
+ * The stylesheet goes to the **front** of `<head>`, so an app's own
+ * stylesheet — which is in the document before React ever mounts — wins
+ * against a rule of the same specificity. A consumer that wants to change a
+ * part of the box can therefore do it from plain CSS.
+ */
 export function ensureSearchBoxStyles(): void {
   if (typeof document === 'undefined') return
   if (document.getElementById(STYLE_ID)) return
   const el = document.createElement('style')
   el.id = STYLE_ID
   el.textContent = searchBoxCss
-  document.head.appendChild(el)
+  document.head.insertBefore(el, document.head.firstChild)
 }
