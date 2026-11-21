@@ -169,4 +169,21 @@ describe('ToastProvider + ToastViewport (integration)', () => {
     const card = container.querySelector('[role="status"]') as HTMLElement
     expect(card.style.borderRadius).toBe('2px')
   })
+
+  it('paints the tinted background and border with color-mix', () => {
+    // `var(--up)/10` is invalid CSS — the browser drops the declaration and
+    // the toast loses its background. The tint has to be a color-mix().
+    let api: ToastApi | undefined
+    const { container } = render(
+      <ToastProvider>
+        <ToastViewport />
+        <ApiCapture onReady={(a) => { api = a }} />
+      </ToastProvider>
+    )
+    act(() => api!.success('Saved'))
+    const card = container.querySelector('[role="status"]') as HTMLElement
+    expect(card.style.background).toContain('color-mix(')
+    expect(card.style.border).toContain('color-mix(')
+    expect(card.style.background).not.toContain('/10')
+  })
 })

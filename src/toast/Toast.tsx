@@ -52,11 +52,20 @@ const POSITION_STYLE: Record<ToastPosition, CSSProperties> = {
   'bottom-right': { bottom: 16, right: 16 },
 }
 
+/** A tint of a theme token.
+ *
+ *  `var(--up)/10` is *not* valid CSS — the slash-alpha form only exists inside
+ *  a colour function, so the browser drops the whole declaration and the toast
+ *  loses its background and its border. `color-mix()` is the portable way to
+ *  derive a translucent background from an app-supplied token. */
+const tint = (token: string, percent: number): string =>
+  `color-mix(in oklab, ${token} ${percent}%, transparent)`
+
 const VARIANT_COLOR: Record<ToastVariant, { fg: string; bg: string; border: string }> = {
   default: { fg: 'var(--text)', bg: 'var(--bg-soft)', border: 'var(--rule)' },
-  success: { fg: 'var(--up)', bg: 'var(--up)/10', border: 'var(--up)/30' },
-  warning: { fg: 'var(--nova)', bg: 'var(--nova)/10', border: 'var(--nova)/30' },
-  error:   { fg: 'var(--down)', bg: 'var(--down)/10', border: 'var(--down)/30' },
+  success: { fg: 'var(--up)', bg: tint('var(--up)', 10), border: tint('var(--up)', 30) },
+  warning: { fg: 'var(--nova)', bg: tint('var(--nova)', 10), border: tint('var(--nova)', 30) },
+  error:   { fg: 'var(--down)', bg: tint('var(--down)', 10), border: tint('var(--down)', 30) },
 }
 
 const DEFAULT_DURATION = 4000
