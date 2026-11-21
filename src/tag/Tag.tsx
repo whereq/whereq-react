@@ -1,5 +1,5 @@
 import { forwardRef, createElement } from 'react'
-import type { ReactElement, Ref } from 'react'
+import type { CSSProperties, ReactElement, Ref } from 'react'
 import type { TagProps, TagPropsDefault, TagSize, TagVariant, TagAs } from './types'
 
 /** A generic inline tag / chip / pill.
@@ -32,7 +32,7 @@ import type { TagProps, TagPropsDefault, TagSize, TagVariant, TagAs } from './ty
  *  The named export below wraps this in a `forwardRef` for ergonomic `ref`
  *  support at the call site. */
 export function TagImpl<T extends TagAs = 'span'>(
-  { variant = 'subtle', size = 'sm', as, dotColor, solidColor, className, children, ref, ...rest }: TagProps<T>,
+  { variant = 'subtle', size = 'sm', as, dotColor, solidColor, className, children, ref, style, ...rest }: TagProps<T>,
 ): ReactElement {
   const tag = (as ?? 'span') as TagAs
   return createElement(
@@ -51,6 +51,12 @@ export function TagImpl<T extends TagAs = 'span'>(
         variantClasses(variant, dotColor, solidColor),
         className,
       ].filter(Boolean).join(' '),
+      // The solid variant's colours are also applied inline. Its class names
+      // are built at runtime (`bg-[${colour}]/10`), and a consumer's Tailwind
+      // only ever sees the template literal in the published bundle — so it
+      // cannot compile them and the pill would render unpainted. The inline
+      // style is what actually paints it, in every consumer.
+      style: variant === 'solid' ? { ...style, ...solidColors(solidColor) } : style,
     },
     variant === 'dot' && createElement('span', {
       'aria-hidden': true,
@@ -78,6 +84,30 @@ function sizeClasses(size: TagSize): string {
     : 'px-2 py-0.5 text-[10px] uppercase tracking-wide'
 }
 
+/** Resolve the `solid` variant's colour to a CSS colour value.
+ *
+ *  Accepts a design token (`accent` / `up` / `down` / `nova`) or a raw CSS
+ *  colour (`var(--foo)` / `#ff0000`). */
+export function resolveSolidColor(solidColor?: string): string {
+  const color = solidColor ?? 'accent'
+  const isToken = color === 'accent' || color === 'up' || color === 'down' || color === 'nova'
+  return isToken ? `var(--${color})` : color
+}
+
+/** The inline colours of the `solid` variant.
+ *
+ *  The tints are `color-mix()` — `var(--accent)/10` is not valid CSS (the
+ *  slash-alpha form only exists inside a colour function), so the browser
+ *  would drop the declaration. */
+function solidColors(solidColor?: string): CSSProperties {
+  const color = resolveSolidColor(solidColor)
+  return {
+    color,
+    backgroundColor: `color-mix(in oklab, ${color} 10%, transparent)`,
+    borderColor: `color-mix(in oklab, ${color} 30%, transparent)`,
+  }
+}
+
 function variantClasses(variant: TagVariant, dotColor?: string, solidColor?: string): string {
   switch (variant) {
     case 'subtle':
@@ -87,13 +117,7 @@ function variantClasses(variant: TagVariant, dotColor?: string, solidColor?: str
     case 'solid': {
       // solidColor defaults to "accent"; pass a token or raw CSS value
       // to recolor the pill (e.g. "up" for a green "live" indicator).
-      const color = solidColor ?? 'accent'
-      // Accept either a design token ("accent" / "up" / "down" / "nova")
-      // or a raw CSS colour ("var(--foo)" / "#ff0000"). For tokens we use
-      // the same /30 border + /10 bg + plain text colour that the
-      // default solid uses for "accent".
-      const isToken = color === 'accent' || color === 'up' || color === 'down' || color === 'nova'
-      const colorVar = isToken ? `var(--${color})` : color
+      const colorVar = resolveSolidColor(solidColor)
       // The colour has to go through the arbitrary-value form
       // (`border-[<colour>]/30`). A bare `border <colour>/30` is two
       // class names, and the second one is not a utility — the pill

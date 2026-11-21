@@ -78,6 +78,16 @@ describe('Tag', () => {
     expect((container.firstChild as HTMLElement).className).toContain('text-sm')
   })
 
+  it('paints the solid variant inline as well as with classes', () => {
+    // The solid variant's class names are built at runtime, so a consumer's
+    // Tailwind cannot compile them — the inline style is what paints the pill.
+    const { container } = render(<Tag variant="solid" solidColor="up">Live</Tag>)
+    const el = container.firstChild as HTMLElement
+    expect(el.style.color).toBe('var(--up)')
+    expect(el.style.backgroundColor).toContain('color-mix(')
+    expect(el.style.borderColor).toContain('color-mix(')
+  })
+
   it('applies the solidColor token to the solid variant', () => {
     // Default = accent
     const accent = render(<Tag variant="solid">x</Tag>)
