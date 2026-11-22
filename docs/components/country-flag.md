@@ -72,12 +72,26 @@ through to the wrapper `<span>`. A forwarded `ref` points at the wrapper.
 import {
   lookupFlag,     // (slug) => FlagEntry | undefined
   isSupported,    // (slug) => boolean (case-insensitive)
+  FLAG_ALIASES,   // Record<string, string> — e.g. { uk: 'gb' }
   FLAG_CATALOG,   // ReadonlyArray<{slug, name}>, name-sorted
   SUPPORTED_SLUGS, // string[], alphabetised
   FLAG_VIEWBOX,   // '0 0 24 16' (the standard SVG aspect)
   star5,          // (cx, cy, r) => string  — shared 5-point star polygon helper
 } from '@whereq/react'
 ```
+
+### Slugs and aliases
+
+Slugs are ISO 3166-1 alpha-2 codes in lowercase (`"us"`, `"cn"`, `"gb"`),
+or the continent pseudo-codes `na` / `eu`. A few colloquial spellings are
+kept as **aliases** and resolve to the registry entry:
+
+| Alias | Resolves to | Why |
+|---|---|---|
+| `uk` | `gb` (United Kingdom) | `uk` is the colloquial code; ISO 3166-1 alpha-2 says `gb` |
+
+An alias resolves in `lookupFlag`, `isSupported` and `<CountryFlag
+country="uk" />` alike — both spellings render the same flag.
 
 ## Notes
 

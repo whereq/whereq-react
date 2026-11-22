@@ -196,6 +196,17 @@ function flagEU(): ReactElement {
   )
 }
 
+/**
+ * The emblem an unknown slug falls back to.
+ *
+ * A country we have no flag for (or a slug that was simply typed wrong)
+ * draws the continent emblem instead of nothing — an empty chip reads as
+ * a broken image, and a wrong flag would be worse still.
+ */
+export function flagFallback(): ReactElement {
+  return flagNA()
+}
+
 // ---------------------------------------------------------------------------
 // Registry — `slug` → display name + builder. Adding a country = 1 row + (if
 // non-trivial geometry) 1 custom function above. Default fallback for any
@@ -213,15 +224,34 @@ export interface FlagEntry {
   build: FlagBuilder
 }
 
-/** Lookup map of every country / continent this library knows. */
-export const FLAGS: Record<string, FlagEntry> = {
+/**
+ * Slugs that are not registered under their own name but map onto one
+ * that is.
+ *
+ * `uk` is the colloquial code for the United Kingdom, but ISO 3166-1
+ * alpha-2 says `gb` — so `gb` is the registry key and `uk` stays an
+ * alias. Without the alias, `<CountryFlag country="uk" />` renders an
+ * empty box: the lookup misses, and an unknown slug deliberately draws
+ * nothing rather than a wrong flag.
+ */
+export const FLAG_ALIASES: Record<string, string> = {
+  uk: 'gb',
+}
+
+/** Resolves a slug (or an alias) to its registry key. */
+function resolveSlug(slug: string): string {
+  const key = slug.toLowerCase()
+  return FLAG_ALIASES[key] ?? key
+}
+
+/** Lookup map of every country / continent this library knows. */export const FLAGS: Record<string, FlagEntry> = {
   // ── Continents (pseudo-codes for multi-region groups) ─────────────
   na: { slug: 'na', name: 'North America', build: flagNA },
   eu: { slug: 'eu', name: 'Europe', build: flagEU },
 
   // ── Hand-curated (non-trivial geometry) ────────────────────────────
   us: { slug: 'us', name: 'United States', build: flagUS },
-  uk: { slug: 'uk', name: 'United Kingdom', build: flagUK },
+  gb: { slug: 'gb', name: 'United Kingdom', build: flagUK },
   cn: { slug: 'cn', name: 'China', build: flagCN },
   jp: { slug: 'jp', name: 'Japan', build: flagJP },
   ca: { slug: 'ca', name: 'Canada', build: flagCA },
@@ -343,7 +373,7 @@ export const FLAGS: Record<string, FlagEntry> = {
 
 /** Look up an entry by slug; returns `undefined` for unsupported countries. */
 export function lookupFlag(slug: string): FlagEntry | undefined {
-  return FLAGS[slug.toLowerCase()] ?? undefined
+  return FLAGS[resolveSlug(slug)] ?? undefined
 }
 
 /** All slugs this library knows, sorted. Useful for catalog UIs. */
@@ -354,7 +384,8 @@ export const FLAG_CATALOG: ReadonlyArray<{ slug: string; name: string }> = Objec
   .map((f) => ({ slug: f.slug, name: f.name }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
-/** `true` if the slug is in our registry. */
+/** `true` if the slug is in our registry (or is an alias of an entry). */
 export function isSupported(slug: string): boolean {
-  return slug.toLowerCase() in FLAGS
+  const key = slug.toLowerCase()
+  return key in FLAGS || key in FLAG_ALIASES
 }

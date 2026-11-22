@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from 'react'
 import type { CSSProperties } from 'react'
-import { FLAG_VIEWBOX, lookupFlag } from './flags'
+import { FLAG_VIEWBOX, flagFallback, lookupFlag } from './flags'
 import type { CountryFlagProps } from './types'
 
 /** Maps {@link CountryFlagShape} to a CSS `border-radius`. The
@@ -52,7 +52,7 @@ export const CountryFlag = forwardRef<HTMLSpanElement, CountryFlagProps>(functio
   // Even when the slug is unknown, we render a neutral fallback glyph (the
   // continent emblem) — a missing flag is more useful than an empty box.
   const label = alt ?? entry?.name ?? country.toUpperCase()
-  const inner = useMemo(() => (entry ? entry.build() : null), [entry])
+  const inner = useMemo(() => (entry ? entry.build() : flagFallback()), [entry])
 
   const wrapStyle: CSSProperties = {
     display: 'inline-block',
@@ -93,7 +93,6 @@ export const CountryFlag = forwardRef<HTMLSpanElement, CountryFlagProps>(functio
         >
           {inner}
         </svg>
-      ) : null}
-    </span>
+      ) : null}    </span>
   )
 })

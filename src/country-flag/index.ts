@@ -2,6 +2,7 @@ export { CountryFlag } from './CountryFlag'
 export {
   lookupFlag,
   isSupported,
+  FLAG_ALIASES,
   FLAG_CATALOG,
   SUPPORTED_SLUGS,
   FLAG_VIEWBOX,
