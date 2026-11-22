@@ -35,6 +35,25 @@ describe('CountryFlag (rendering)', () => {
     expect(screen.getByRole('img', { name: 'ZZ' })).toBeTruthy()
   })
 
+  it('renders the neutral emblem — not an empty box — for an unknown slug', () => {
+    const { container } = render(<CountryFlag country="zz" />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg).toBeTruthy()
+    expect(svg.children.length).toBeGreaterThan(0)
+  })
+
+  it('renders the United Kingdom flag for "gb" (ISO 3166-1 alpha-2)', () => {
+    const { container } = render(<CountryFlag country="gb" />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg.querySelector('rect[fill="#012169"]')).toBeTruthy()
+  })
+
+  it('renders the United Kingdom flag for "uk" as well (the alias)', () => {
+    const { container } = render(<CountryFlag country="uk" />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg.querySelector('rect[fill="#012169"]')).toBeTruthy()
+  })
+
   it('scales to size while keeping the 24:16 ratio (height = size × 2/3)', () => {
     const { container } = render(<CountryFlag country="us" size={30} />)
     const wrap = container.firstChild as HTMLElement
@@ -125,6 +144,15 @@ describe('registry helpers', () => {
     expect(isSupported('cn')).toBe(true)
     expect(isSupported('zz')).toBe(false)
     expect(isSupported('US')).toBe(true) // case-insensitive
+    expect(isSupported('uk')).toBe(true) // alias of "gb"
+  })
+
+  it('resolves the "uk" alias to the United Kingdom entry', () => {
+    expect(lookupFlag('gb')?.name).toBe('United Kingdom')
+    expect(lookupFlag('gb')?.slug).toBe('gb')
+    expect(lookupFlag('uk')?.name).toBe('United Kingdom')
+    expect(lookupFlag('uk')?.slug).toBe('gb')
+    expect(lookupFlag('GB')?.name).toBe('United Kingdom') // case-insensitive
   })
 
   it('SUPPORTED_SLUGS is sorted alphabetically', () => {
