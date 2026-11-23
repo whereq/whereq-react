@@ -172,6 +172,38 @@ describe('registry helpers', () => {
       expect(lookupFlag(c.slug)?.name).toBe(c.name)
     }
   })
+
+  it('every registered flag builds to something drawable', () => {
+    for (const slug of SUPPORTED_SLUGS) {
+      const entry = lookupFlag(slug)
+      expect(entry).toBeDefined()
+      const { container } = render(<CountryFlag country={slug} />)
+      const svg = container.querySelector('svg')
+      expect(svg, `${slug} draws no svg`).toBeTruthy()
+      // A flag that renders an empty <g> is a broken flag.
+      expect(svg!.childNodes.length, `${slug} draws nothing`).toBeGreaterThan(0)
+    }
+  })
+
+  it('knows the countries the demo puts on show', () => {
+    for (const slug of [
+      'ca', 'cn', 'us', 'gb', 'fr', 'de', 'it', 'es', 'mx', 'br',
+      'jp', 'kr', 'in', 'pk', 'sg', 'ru', 'tr', 'eg', 'za', 'au',
+      'nl', 'se', 'pl', 'eu',
+    ]) {
+      expect(isSupported(slug), `${slug} is not in the registry`).toBe(true)
+    }
+  })
+
+  it('resolves the duplicate-slug aliases to their canonical entry', () => {
+    expect(lookupFlag('in2')?.slug).toBe('in')
+    expect(lookupFlag('nl2')?.slug).toBe('nl')
+  })
+
+  it('has no two countries sharing a name', () => {
+    const names = FLAG_CATALOG.map((c) => c.name)
+    expect(new Set(names).size).toBe(names.length)
+  })
 })
 
 describe('star5 geometry', () => {
