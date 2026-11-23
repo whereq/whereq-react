@@ -16,7 +16,7 @@ import { CountryFlag } from '@whereq/react'
 ;<CountryFlag country="eu" alt="European Union" />
 ```
 
-The shared registry covers 40+ major economies + the `na` / `eu` continent
+The shared registry covers 60+ countries + the `na` / `eu` continent
 pseudo-codes. Unknown slugs render the continent emblem as a safe fallback so
 the chip never goes empty.
 
@@ -89,6 +89,8 @@ kept as **aliases** and resolve to the registry entry:
 | Alias | Resolves to | Why |
 |---|---|---|
 | `uk` | `gb` (United Kingdom) | `uk` is the colloquial code; ISO 3166-1 alpha-2 says `gb` |
+| `in2` | `in` (India) | a duplicate of a country that already had a key |
+| `nl2` | `nl` (Netherlands) | a duplicate of a country that already had a key |
 
 An alias resolves in `lookupFlag`, `isSupported` and `<CountryFlag
 country="uk" />` alike — both spellings render the same flag.
@@ -106,6 +108,11 @@ country="uk" />` alike — both spellings render the same flag.
   compose it from the existing `verticalStripes` / `horizontalStripes`
   helpers, or write a custom builder for non-trivial geometry (the US flag
   and Union Jack are reference implementations).
+- **Reference first** — a flag drawn from memory is a flag that is subtly
+  wrong. Check the geometry against a reference SVG or a flag photo before
+  committing it, and compare the render side by side: the crescent of
+  Pakistan opens *up and to the right*, Qatar's white band is at the *hoist*,
+  and the United Kingdom is keyed `gb`, not `uk`.
 
 ## Adding a flag
 
